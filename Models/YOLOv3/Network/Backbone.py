@@ -1,51 +1,18 @@
-import torch
 import torch.nn as nn
 
-
-class ConvBlock(nn.Sequential):
-    def __init__(
-        self,
-        in_channels: int,
-        out_channels: int,
-        kernel_size: tuple | int,
-        stride: tuple | int,
-        padding: tuple | int,
-    ):
-        super().__init__()
-        self.append(
-            nn.Conv2d(
-                in_channels, out_channels, kernel_size, stride, padding, bias=False
-            )
-        )
-        self.append(nn.BatchNorm2d(out_channels))
-        self.append(nn.LeakyReLU(0.1))
-
-
-class ResidualBlock(nn.Module):
-    def __init__(self, channels):
-        super().__init__()
-        self.conv1 = ConvBlock(
-            channels, channels // 2, kernel_size=1, stride=1, padding=0
-        )  # input mxn
-        self.conv2 = ConvBlock(
-            channels // 2, channels, kernel_size=3, stride=1, padding=1
-        )  # mxn output mxn
-
-    def forward(self, input):
-        return input + self.conv2(self.conv1(input))
+from Models.YOLOv3.Network.Blocks import ConvBlock, ResidualBlock
 
 
 class PoolingLayer(nn.Identity):
-    """PoolingLayer will output feature map."""
+    """Outputs a current feature map."""
 
     ...
 
 
 class Darknet53(nn.ModuleList):
-    def __init__(self, device: str = "cpu"):
+    def __init__(self):
         super().__init__()
-        self.device = device
-
+        
         self.append(
             ConvBlock(3, 32, kernel_size=3, stride=1, padding=1)
         )  # input 640x480x3
