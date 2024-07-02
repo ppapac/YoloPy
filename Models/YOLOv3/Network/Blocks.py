@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 
 class ConvBlock(nn.Sequential):
@@ -29,7 +30,7 @@ class ResidualBlock(nn.Module):
             channels // 2, channels, kernel_size=3, stride=1, padding=1
         )  # mxn output mxn
 
-    def forward(self, input):
+    def forward(self, input: torch.Tensor) -> torch.Tensor:
         return input + self.conv2(self.conv1(input))
 
 class BoundingBoxOutputBlock(nn.Sequential):

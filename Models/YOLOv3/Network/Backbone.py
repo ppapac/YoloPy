@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 
 from Models.YOLOv3.Network.Blocks import ConvBlock, ResidualBlock
@@ -36,10 +37,10 @@ class Darknet53(nn.ModuleList):
             ConvBlock(1024, 1024, kernel_size=1, stride=1, padding=0)  # 20x15
         )  # Final conv layer output 20x15
 
-    def forward(self, input):
+    def forward(self, input: torch.Tensor) -> list[torch.Tensor]:
         output = []
         for module in self:
             if isinstance(module, PoolingLayer):
                 output.append(input)
             input = module(input)
-        return input
+        return output # [80x60, 40x30, 20x15]
