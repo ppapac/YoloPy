@@ -9,6 +9,8 @@ COPY requirements.txt set_python_env.sh /requirements/
 
 RUN bash ./requirements/set_python_env.sh $PYTHON_ENV
 
+ENV PYTHONPATH "/YoloPy:${PYTHONPATH}"
+
 RUN apt-get update && \
     apt-get install -y \
     vim \

@@ -43,4 +43,5 @@ class Darknet53(nn.ModuleList):
             if isinstance(module, PoolingLayer):
                 output.append(input)
             input = module(input)
+        output.append(input)
         return output # [80x60, 40x30, 20x15]

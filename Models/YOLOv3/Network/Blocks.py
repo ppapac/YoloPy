@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 
+
 class ConvBlock(nn.Sequential):
     def __init__(
         self,
@@ -33,9 +34,21 @@ class ResidualBlock(nn.Module):
     def forward(self, input: torch.Tensor) -> torch.Tensor:
         return input + self.conv2(self.conv1(input))
 
+
 class BoundingBoxOutputBlock(nn.Sequential):
     """Outputs a bounding box for a feature map."""
+
     def __init__(self, in_channels: int, number_of_classes: int):
         super().__init__()
-        self.append(ConvBlock(in_channels, 2*in_channels, kernel_size=3, stride=1, padding=0))
-        self.append(ConvBlock(2*in_channels, 3*(number_of_classes+5), kernel_size=1))
+        self.append(
+            ConvBlock(in_channels, 2 * in_channels, kernel_size=3, stride=1, padding=1)
+        )
+        self.append(
+            ConvBlock(
+                2 * in_channels,
+                3 * (number_of_classes + 5),
+                kernel_size=1,
+                stride=1,
+                padding=0,
+            )
+        )
