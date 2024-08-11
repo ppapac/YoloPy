@@ -80,3 +80,7 @@ class Detector(nn.Module):
                     [input, feature_maps[module.feature_map_to_concat]], dim=1
                 )
         return bounding_boxes
+
+if __name__ == "__main__":
+    testten = torch.randn([1, 51, 80, 60])
+    torch.
