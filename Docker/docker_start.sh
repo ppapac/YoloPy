@@ -3,8 +3,6 @@
 SCRIPT=$(realpath "$0")
 SCRIPTDIR=$(dirname $SCRIPT)
 
-sed -i 's/\r$//' "$SCRIPTDIR/set_python_env.sh"
-
 
 docker build $SCRIPTDIR -f $SCRIPTDIR/Dockerfile -t my_python_env:3.10.11
 
