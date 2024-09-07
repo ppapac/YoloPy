@@ -52,7 +52,7 @@ class DetracDataLoader(Dataset):
             )
             for feature_output_width, feature_scale_height in self.feature_output_shapes
         ]
-        ground_truth = torch.cat(targets_by_scale)
+        ground_truth = torch.stack(targets_by_scale)
 
         return image, annotations
 

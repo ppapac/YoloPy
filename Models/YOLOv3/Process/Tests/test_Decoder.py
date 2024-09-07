@@ -10,9 +10,9 @@ from Models.YOLOv3.Process import Decoder
 @pytest.mark.parametrize(
     "input, expected_output",
     [
-        (torch.rand([1, 51, 80, 60]), torch.Size([1, 3, 17, 80, 60])),
-        (torch.rand([1, 51, 40, 30]), torch.Size([1, 3, 17, 40, 30])),
-        (torch.rand([1, 51, 20, 15]), torch.Size([1, 3, 17, 20, 15])),
+        (torch.rand([1, 80, 60, 51]), torch.Size([1, 3, 80, 60, 17])),
+        (torch.rand([1, 40, 30, 51]), torch.Size([1, 3, 40, 30, 17])),
+        (torch.rand([1, 20, 15, 51]), torch.Size([1, 3, 20, 15, 17])),
     ],
 )
 def test_decode_raw_outputs(input, expected_output):

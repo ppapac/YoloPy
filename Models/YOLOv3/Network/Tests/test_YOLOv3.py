@@ -13,9 +13,9 @@ def input():
 @pytest.fixture
 def expected_output_sizes():
     return [
-        torch.Size([1, 51, 80, 60]),
-        torch.Size([1, 51, 40, 30]),
-        torch.Size([1, 51, 20, 15]),
+        torch.Size([1, 80, 60, 51]),
+        torch.Size([1, 40, 30, 51]),
+        torch.Size([1, 20, 15, 51]),
     ]
 
 
@@ -24,7 +24,5 @@ def test_detector(input, expected_output_sizes):
     output_boxes = detector(input)
     assert [
         output_box.size() == expected_output_size
-        for output_box, expected_output_size in zip(
-            output_boxes, expected_output_sizes
-        )
+        for output_box, expected_output_size in zip(output_boxes, expected_output_sizes)
     ]

@@ -22,9 +22,16 @@ class FeatureMapSize(StrEnum):
 
 class UpsampleConcatLayer(nn.UpsamplingNearest2d):
     """Upsampling is succeeded by concating a feature map defined by `feature_map_to_concat`."""
-    def __init__(self, size: Optional[_size_2_t] = None, scale_factor: Optional[_ratio_2_t] = None, feature_map_to_concat: FeatureMapSize = FeatureMapSize.large) -> None:
+
+    def __init__(
+        self,
+        size: Optional[_size_2_t] = None,
+        scale_factor: Optional[_ratio_2_t] = None,
+        feature_map_to_concat: FeatureMapSize = FeatureMapSize.large,
+    ) -> None:
         super().__init__(size, scale_factor)
         self.feature_map_to_concat = feature_map_to_concat
+
 
 class Detector(nn.Module):
     def __init__(self):
@@ -41,7 +48,11 @@ class Detector(nn.Module):
         self.detector.append(BoundingBoxOutputBlock(512, number_of_classes=12))
 
         self.detector.append(ConvBlock(512, 256, kernel_size=1, stride=1, padding=0))
-        self.detector.append(UpsampleConcatLayer(scale_factor=2, feature_map_to_concat=FeatureMapSize.medium))
+        self.detector.append(
+            UpsampleConcatLayer(
+                scale_factor=2, feature_map_to_concat=FeatureMapSize.medium
+            )
+        )
 
         self.detector.append(ConvBlock(768, 256, kernel_size=1, stride=1, padding=0))
         self.detector.append(ConvBlock(256, 512, kernel_size=3, stride=1, padding=1))
@@ -51,7 +62,11 @@ class Detector(nn.Module):
         self.detector.append(BoundingBoxOutputBlock(256, number_of_classes=12))
 
         self.detector.append(ConvBlock(256, 128, kernel_size=1, stride=1, padding=0))
-        self.detector.append(UpsampleConcatLayer(scale_factor=2, feature_map_to_concat=FeatureMapSize.small))
+        self.detector.append(
+            UpsampleConcatLayer(
+                scale_factor=2, feature_map_to_concat=FeatureMapSize.small
+            )
+        )
 
         self.detector.append(ConvBlock(384, 128, kernel_size=1, stride=1, padding=0))
         self.detector.append(ConvBlock(128, 256, kernel_size=3, stride=1, padding=1))
@@ -79,4 +94,14 @@ class Detector(nn.Module):
                 input = torch.cat(
                     [input, feature_maps[module.feature_map_to_concat]], dim=1
                 )
-        return bounding_boxes
+        return self.reshape_bounding_box_output(bounding_boxes)
+
+    def reshape_bounding_box_output(
+        self,
+        bounding_boxes: list[torch.Tensor],
+    ) -> list[torch.Tensor]:
+        """Reposition bounding box output from second to fourth dimension."""
+        return [
+            box.reshape(box.shape[0], box.shape[2], box.shape[3], box.shape[1])
+            for box in bounding_boxes
+        ]
